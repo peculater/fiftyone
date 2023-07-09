@@ -9452,6 +9452,16 @@ class SampleCollection(object):
 
         return False
 
+    def _contains_frames(self, any_slice=True):
+        if self._contains_videos(any_slice=any_slice):
+            if self.media_type == fom.GROUP:
+                videos = self.select_group_slices(media_type=fom.VIDEO)
+            else:
+                videos = self
+            frame_count = videos.count("frames")
+            return frame_count and frame_count > 0
+        return False
+
     def _has_frame_fields(self):
         return self._contains_videos(any_slice=True)
 

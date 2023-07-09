@@ -7540,6 +7540,7 @@ def _merge_samples_pipeline(
         src_samples = src_collection
 
     contains_videos = src_collection._contains_videos(any_slice=True)
+    contains_frames = src_collection._contains_frames(any_slice=True)
     if contains_videos:
         if contains_groups:
             src_videos = src_collection.select_group_slices(
@@ -7706,7 +7707,7 @@ def _merge_samples_pipeline(
     #   collections
     #
 
-    if contains_videos:
+    if contains_frames:
         frame_key_field = "_merge_key"
 
         # @todo this there a cleaner way to avoid this? we have to be sure that
@@ -7800,7 +7801,7 @@ def _merge_samples_pipeline(
             dst_dataset, key_field, unique=True
         )
 
-        if contains_videos:
+        if contains_frames:
             _index_frames(dst_dataset, key_field, frame_key_field)
             _index_frames(src_dataset, key_field, frame_key_field)
 
@@ -7820,7 +7821,7 @@ def _merge_samples_pipeline(
             post_pipeline=sample_pipeline,
         )
 
-        if contains_videos:
+        if contains_frames:
             # Merge frames
             _src_videos._aggregate(
                 frames_only=True, post_pipeline=frame_pipeline
@@ -7837,7 +7838,7 @@ def _merge_samples_pipeline(
             dst_dataset, key_field, new_dst_index, dropped_dst_index
         )
 
-        if contains_videos:
+        if contains_frames:
             # Cleanup indexes
             _cleanup_frame_index(dst_dataset, dst_frame_index)
             _cleanup_frame_index(src_dataset, src_frame_index)
